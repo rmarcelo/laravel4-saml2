@@ -1,5 +1,5 @@
 <?php
-namespace Aacotroneo\Saml2;
+namespace Pitbulk\Saml2;
 
 use Config;
 use Route;
@@ -23,7 +23,7 @@ class Saml2ServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('aacotroneo/saml2');
+        $this->package('pitbulk/laravel4-saml2');
 
         include __DIR__ . '/../../routes.php';
     }
@@ -36,7 +36,7 @@ class Saml2ServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app['saml2auth'] = $this->app->share(function ($app) {
-            $config = Config::get('saml2::saml_settings');
+            $config = Config::get('laravel4-saml2::saml_settings');
 
             $config['sp']['entityId'] = URL::route('saml_metadata');
 
@@ -44,12 +44,12 @@ class Saml2ServiceProvider extends ServiceProvider
 
             $config['sp']['singleLogoutService']['url'] = URL::route('saml_sls');
 
-            return new \Aacotroneo\Saml2\Saml2Auth($config);
+            return new \Pitbulk\Saml2\Saml2Auth($config);
         });
 
         $this->app->booting(function () {
             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Saml2Auth', 'Aacotroneo\Saml2\Facades\Saml2Auth');
+            $loader->alias('Saml2Auth', 'Pitbulk\Saml2\Facades\Saml2Auth');
         });
     }
 

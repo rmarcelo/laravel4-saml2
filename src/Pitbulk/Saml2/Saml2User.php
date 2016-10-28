@@ -1,6 +1,6 @@
 <?php
 
-namespace Aacotroneo\Saml2;
+namespace Pitbulk\Saml2;
 
 use Input;
 use OneLogin_Saml2_Auth;
@@ -9,7 +9,7 @@ use URL;
 /**
  * A simple class that represents the user that 'came' inside the saml2 assertion
  * Class Saml2User
- * @package Aacotroneo\Saml2
+ * @package Pitbulk\Saml2
  */
 class Saml2User
 {

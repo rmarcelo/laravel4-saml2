@@ -9,18 +9,18 @@ The aim of this library is to be as simple as possible. We won't mess with Larav
 To install Saml2 as a Composer package to be used with Laravel 4, simply add this to your composer.json:
 
 ```json
-"aacotroneo/laravel-saml2": "0.0.1"
+"pitbulk/laravel4-saml2": "1.0.0"
 ```
 
 ..and run `composer update`.  Once it's installed, you can register the service provider in `app/config/app.php` in the `providers` array:
 
 ```php
 'providers' => array(
-    		'Aacotroneo\Saml2\Saml2ServiceProvider',
+    		'Pitbulk\Saml2\Saml2ServiceProvider',
 )
 ```
 
-Then publish the config file with `php artisan config:publish aacotroneo/laravel-saml2`. This will add the file `app/config/packages/aacotroneo/laravel-saml2/saml_settings.php`. This config is handled almost directly by  [one login](https://github.com/onelogin/php-saml) so you may get further references there, but will cover here what's really necessary.
+Then publish the config file with `php artisan config:publish pitbulk/laravel4-saml2`. This will add the file `app/config/packages/pitbulk/laravel4-saml2/saml_settings.php`. This config is handled almost directly by [onelogin](https://github.com/onelogin/php-saml) so you may get further references there, but will cover here what's really necessary.
 
 ### Configuration
 
@@ -90,6 +90,4 @@ Event::listen('saml2.logoutRequestReceived', function()
 That's it. Feel free to ask any questions, make PR or suggestions, or open Issues.
 
 
-
-
-
+Lavarel 4 - Saml2 Reference: https://github.com/Kn4ppster/laravel4-saml2

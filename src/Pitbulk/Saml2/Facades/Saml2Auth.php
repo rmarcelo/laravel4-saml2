@@ -1,5 +1,5 @@
 <?php
-namespace Aacotroneo\Saml2\Facades;
+namespace Pitbulk\Saml2\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
