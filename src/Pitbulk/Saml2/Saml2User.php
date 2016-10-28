@@ -2,6 +2,7 @@
 
 namespace Pitbulk\Saml2;
 
+use Config;
 use Input;
 use OneLogin_Saml2_Auth;
 use URL;
@@ -26,10 +27,25 @@ class Saml2User
      */
     function getUserId()
     {
-        $auth = $this->auth;
+        $userId = null;
 
-        return $auth->getNameId();
+        $attrs = $this->getAttributes();
+        if (!empty($attrs)) {
+            $samlSettings = Config::get('laravel4-saml2::saml_settings');
+            if (isset($samlSettings['attrMapping'])) {
+                $attrMapping = $samlSettings['attrMapping'];
+                if (isset($attrMapping['userId']) && !empty($attrMapping['userId'])) {
+                    if (isset($attrs[$attrMapping['userId']])) {
+                        $userId = $attrs[$attrMapping['userId']][0];
+                    }
+                }
+            }
+        }
 
+        if (empty($userId)) {
+            $userId = $this->getNameId();
+        }
+        return $userId;
     }
 
     /**
@@ -37,9 +53,7 @@ class Saml2User
      */
     function getAttributes()
     {
-        $auth = $this->auth;
-
-        return $auth->getAttributes();
+        return $this->auth->getAttributes();
     }
 
     /**
@@ -54,10 +68,18 @@ class Saml2User
     {
         $relayState = Input::get('RelayState'); //just this request
 
-        if ($relayState && URL::full() !=$relayState) {
-
+        if ($relayState && URL::full() != $relayState) {
             return $relayState;
         }
     }
 
+    function getSessionIndex()
+    {
+        return $this->auth->getSessionIndex();
+    }
+
+    function getNameId()
+    {
+        return $this->auth->getNameId();
+    }
 } 

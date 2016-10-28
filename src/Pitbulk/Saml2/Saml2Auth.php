@@ -41,7 +41,6 @@ class Saml2Auth
      */
     function getSaml2User()
     {
-
         return new Saml2User($this->auth);
     }
 
@@ -52,19 +51,16 @@ class Saml2Auth
     function login($returnTo = null)
     {
         $auth = $this->auth;
-
         $auth->login($returnTo);
     }
-
     /**
      * Initiate a saml2 logout flow. It will close session on all other SSO services. You should close
      * local session if applicable.
      */
-    function logout()
+    function logout($returnTo = null, $nameId = null, $sessionIndex = null)
     {
         $auth = $this->auth;
-
-        $auth->logout();
+        $auth->logout($returnTo, [], $nameId, $sessionIndex);
     }
 
     /**
@@ -82,27 +78,22 @@ class Saml2Auth
         $errors = $auth->getErrors();
 
         if (!empty($errors)) {
-            Log::error("Invalid saml response", $errors);
-            throw new \Exception("The saml assertion is not valid, please check the logs.");
+            return $errors;
         }
-
         if (!$auth->isAuthenticated()) {
-            Log::error("Could not authenticate with the saml response. Something happened");
-            throw new \Exception("The saml assertion is not valid, please check the logs.");
+            return array('error' => 'Could not authenticate');
         }
-
+        return null;
     }
 
     /**
      * Process a Saml response (assertion consumer service)
      * @throws \Exception
      */
-    function sls($retrieveParametersFromServer = false)
+    function sls($retrieveParametersFromServer = false, $keep_local_session = false, $stay= false)
     {
         $auth = $this->auth;
 
-        $keep_local_session = false;
-        $stay = true;
         $session_callback = function () {
             Event::fire('saml2.logoutRequestReceived');
         };
@@ -126,16 +117,12 @@ class Saml2Auth
         $errors = $settings->validateMetadata($metadata);
 
         if (empty($errors)) {
-
             return $metadata;
         } else {
-
             throw new InvalidArgumentException(
                 'Invalid SP metadata: ' . implode(', ', $errors),
                 OneLogin_Saml2_Error::METADATA_SP_INVALID
             );
         }
     }
-
-
 } 

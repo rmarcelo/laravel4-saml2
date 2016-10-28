@@ -1,9 +1,41 @@
 <?php
 
-//This is variable is an example - Just make sure that the urls in the 'idp' config are ok.
-$idp_host = 'http://localhost:8000/simplesaml';
-
 return $settings = array(
+    'lavarel' => array(
+        'useRoutes' => true,
+
+        'routesPrefix' => '/saml2',
+
+        /**
+         * Where to redirect after logout
+         */
+        'logoutRoute' => '/',
+
+        /**
+         * Where to redirect after login if no other option was provided
+         */
+        'loginRoute' => '/',
+
+        /**
+         * Where to redirect after login if no other option was provided
+         */
+        'errorRoute' => '/',
+
+        /**
+         * Indicates how the parameters will be
+         * retrieved from the sls request for signature validation
+         */
+        'retrieveParametersFromServer' => false,
+
+        /**
+         * Set here the attribute mapping between Lavarel and the IdP
+         *  LavarelAttrName => IdPAttrName
+         */ 
+        'attrMapping' => array(
+            'userId' => 'uid',
+        ),
+    ),
+
     // If 'strict' is True, then the PHP Toolkit will reject unsigned
     // or unencrypted messages if it expects them signed or encrypted
     // Also will reject the messages if not strictly follow the SAML
@@ -19,7 +51,7 @@ return $settings = array(
         // Specifies constraints on the name identifier to be used to
         // represent the requested subject.
         // Take a look on lib/Saml2/Constants.php to see the NameIdFormat supported
-        'NameIDFormat' => 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+        'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
 
         // Usually x509cert and privateKey of the SP are provided by files placed at
         // the certs folder. But we can also provide them with the following parameters
@@ -54,11 +86,11 @@ return $settings = array(
     // Identity Provider Data that we want connect with our SP
     'idp' => array(
         // Identifier of the IdP entity  (must be a URI)
-        'entityId' => $idp_host . '/saml2/idp/metadata.php',
+        'entityId' => '',
         // SSO endpoint info of the IdP. (Authentication Request protocol)
         'singleSignOnService' => array(
             // URL Target of the IdP where the SP will send the Authentication Request Message
-            'url' => $idp_host . '/saml2/idp/SSOService.php',
+            'url' => '',
             // SAML protocol binding to be used when returning the <Response>
             // message.  Onelogin Toolkit supports for this endpoint the
             // HTTP-POST binding only
@@ -82,14 +114,22 @@ return $settings = array(
         // 'certFingerprint' => '',
     ),
 
-
-
     /***
      *
      *  OneLogin advanced settings
      *
      *
      */
+
+    // Compression settings 
+    // Handle if the getRequest/getResponse methods will return the Request/Response deflated.
+    // But if we provide a $deflate boolean parameter to the getRequest or getResponse
+    // method it will have priority over the compression settings.
+    'compress' => array (
+        'requests' => true,
+        'responses' => true
+    ),
+
     // Security settings
     'security' => array(
 
@@ -130,15 +170,36 @@ return $settings = array(
         // this SP to be signed.        [The Metadata of the SP will offer this info]
         'wantAssertionsSigned' => false,
 
+        // Indicates a requirement for the NameID element on the SAMLResponse received
+        // by this SP to be present.
+        'wantNameId' => true,
+
         // Indicates a requirement for the NameID received by
         // this SP to be encrypted.
         'wantNameIdEncrypted' => false,
 
         // Authentication context.
         // Set to false and no AuthContext will be sent in the AuthNRequest,
-        // Set true or don't present thi parameter and you will get an AuthContext 'exact' 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport'
+        // Set true or don't present this parameter and you will get an AuthContext 'exact' 'urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport'
         // Set an array with the possible auth context values: array ('urn:oasis:names:tc:SAML:2.0:ac:classes:Password', 'urn:oasis:names:tc:SAML:2.0:ac:classes:X509'),
-        'requestedAuthnContext' => true,
+        'requestedAuthnContext' => false,
+        // Allows the authn comparison parameter to be set, defaults to 'exact' if
+        // the setting is not present.
+        'requestedAuthnContextComparison' => 'exact',
+        // Indicates if the SP will validate all received xmls.
+        // (In order to validate the xml, 'strict' and 'wantXMLValidation' must be true).
+        'wantXMLValidation' => true,
+
+        // Algorithm that the toolkit will use on signing process. Options:
+        //    'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
+        //    'http://www.w3.org/2000/09/xmldsig#dsa-sha1'
+        //    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
+        //    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384'
+        //    'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512'
+        'signatureAlgorithm' => 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
+        // ADFS URL-Encodes SAML data as lowercase, and the toolkit by default uses
+        // uppercase. Turn it True for ADFS compatibility on signature verification
+        'lowercaseUrlencoding' => false,
     ),
 
     // Contact information template, it is recommended to suply a technical and support contacts
@@ -161,14 +222,5 @@ return $settings = array(
             'url' => 'http://url'
         ),
     ),
-
-/* Interoperable SAML 2.0 Web Browser SSO Profile [saml2int]   http://saml2int.org/profile/current
-
-   'authnRequestsSigned' => false,    // SP SHOULD NOT sign the <samlp:AuthnRequest>,
-                                      // MUST NOT assume that the IdP validates the sign
-   'wantAssertionsSigned' => true,
-   'wantAssertionsEncrypted' => true, // MUST be enabled if SSL/HTTPs is disabled
-   'wantNameIdEncrypted' => false,
-*/
 
 );

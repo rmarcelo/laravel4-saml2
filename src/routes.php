@@ -1,16 +1,24 @@
 <?php
 
 
-Route::group(array('prefix' => Config::get('laravel4-saml2::settings.routesPrefix')), function () {
-
-    Route::get('/logout', array(
-        'as' => 'saml_logout',
-        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@logout',
-    ));
+Route::group([
+    'prefix' => Config::get('laravel4-saml2::settings.routesPrefix')
+],
+    function () {
 
     Route::get('/metadata', array(
         'as' => 'saml_metadata',
         'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@metadata',
+    ));
+
+    Route::get('/login', array(
+        'as' => 'saml_login',
+        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@login',
+    ));
+
+    Route::get('/logout', array(
+        'as' => 'saml_logout',
+        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@logout',
     ));
 
     Route::post('/acs', array(

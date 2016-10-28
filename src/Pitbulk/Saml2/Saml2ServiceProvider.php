@@ -25,7 +25,10 @@ class Saml2ServiceProvider extends ServiceProvider
     {
         $this->package('pitbulk/laravel4-saml2');
 
-        include __DIR__ . '/../../routes.php';
+        $samlSettings = Config::get('laravel4-saml2::saml_settings');
+        if (isset($samlSettings['lavarel']) && isset($samlSettings['lavarel']['useRoutes']) && $samlSettings['lavarel']['useRoutes']) {
+            include __DIR__ . '/../../routes.php';
+        }
     }
 
     /**
@@ -36,15 +39,19 @@ class Saml2ServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app['saml2auth'] = $this->app->share(function ($app) {
-            $config = Config::get('laravel4-saml2::saml_settings');
+            $samlSettings = Config::get('laravel4-saml2::saml_settings');
 
-            $config['sp']['entityId'] = URL::route('saml_metadata');
+            if (empty($samlSettings['sp']['entityId'])) {
+                $samlSettings['sp']['entityId'] = URL::route('saml_metadata');
+            }
+            if (empty($samlSettings['sp']['assertionConsumerService']['url'])) {
+                $samlSettings['sp']['assertionConsumerService']['url'] = URL::route('saml_acs');
+            }
+            if (empty($samlSettings['sp']['singleLogoutService']['url'])) {
+                $samlSettings['sp']['singleLogoutService']['url'] = URL::route('saml_sls');
+            }
 
-            $config['sp']['assertionConsumerService']['url'] = URL::route('saml_acs');
-
-            $config['sp']['singleLogoutService']['url'] = URL::route('saml_sls');
-
-            return new \Pitbulk\Saml2\Saml2Auth($config);
+            return new \Pitbulk\Saml2\Saml2Auth($samlSettings);
         });
 
         $this->app->booting(function () {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Aacotroneo\Saml2\Controllers;
+namespace Pitbulk\Saml2\Controllers;
 
 use Config;
 use Event;
@@ -8,6 +8,7 @@ use Redirect;
 use Saml2Auth;
 use Controller;
 use Response;
+use Log;
 
 
 class Saml2Controller extends Controller
@@ -19,13 +20,30 @@ class Saml2Controller extends Controller
      */
     public function metadata()
     {
-
         $metadata = Saml2Auth::getMetadata();
         $response = Response::make($metadata, 200);
 
         $response->header('Content-Type', 'text/xml');
 
         return $response;
+    }
+
+    /**
+     * This initiates a login request to the IdP.
+     */
+    public function login()
+    {
+        Saml2Auth::login();
+        //does not return, it executes a redirection
+    }
+
+    /**
+     * This initiates a logout request across all the SSO infrastructure.
+     */
+    public function logout()
+    {
+        Saml2Auth::logout();
+        //does not return, it executes a redirection
     }
 
     /**
@@ -41,9 +59,10 @@ class Saml2Controller extends Controller
 
         if($redirectUrl !== null){
             return Redirect::to($redirectUrl);
-        }else {
-
-            return Redirect::to(Config::get('saml2::settings.loginRoute')); //may be set a configurable default
+        } else {
+            $samlSettings = Config::get('saml2::saml_settings');
+            $loginRoute = $samlSettings['lavarel']['loginRoute'];
+            return Redirect::to($loginRoute); //may be set a configurable default
         }
     }
 
@@ -53,19 +72,16 @@ class Saml2Controller extends Controller
      * This means the user logged out of the SSO infrastructure, you 'should' log him out locally too.
      */
     public function sls()
-    {
-        Saml2Auth::sls();
+    {   $samlSettings = Config::get('saml2::saml_settings');
+        $retrieveParametersFromServer = $samlSettings['lavarel']['retrieveParametersFromServer'];
+
+        $errors = Saml2Auth::sls($retrieveParametersFromServer);
+        if (!empty($errors)) {
+            Log::error("Could not log out", $errors);
+            throw new \Exception("Could not log out");
+        }
         Event::fire('saml2.logoutRequestReceived');
-        return Redirect::to(Config::get('saml2::settings.logoutRoute')); //may be set a configurable default
+        $logoutRoute = $samlSettings['lavarel']['logoutRoute'];
+        return Redirect::to($logoutRoute); //may be set a configurable default
     }
-
-    /**
-     * This initiates a logout request across all the SSO infrastructure.
-     */
-    public function logout()
-    {
-        Saml2Auth::logout();  //will actually end up in the sls endpoint
-        //does not return
-    }
-
 }
