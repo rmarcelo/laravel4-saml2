@@ -9,6 +9,7 @@ use Saml2Auth;
 use Controller;
 use Response;
 use Log;
+use Session;
 
 
 class Saml2Controller extends Controller
@@ -52,7 +53,16 @@ class Saml2Controller extends Controller
      */
     public function acs()
     {
-        Saml2Auth::acs();
+        $errors = Saml2Auth::acs();
+
+        if (!empty($errors)) {
+            Session::flash('Saml2 error', var_export($errors, true));
+            Log::error("Could not log in", var_export($errors, true));
+            $samlSettings = Config::get('saml2::saml_settings');
+            $errorRoute = $samlSettings['lavarel']['errorRoute'];
+            return redirect($errorRoute);
+        }
+
         $user = Saml2Auth::getSaml2User();
         Event::fire('saml2.loginRequestReceived', array($user));
         $redirectUrl = $user->getIntendedUrl();
@@ -72,13 +82,16 @@ class Saml2Controller extends Controller
      * This means the user logged out of the SSO infrastructure, you 'should' log him out locally too.
      */
     public function sls()
-    {   $samlSettings = Config::get('saml2::saml_settings');
+    {   
+        $samlSettings = Config::get('saml2::saml_settings');
         $retrieveParametersFromServer = $samlSettings['lavarel']['retrieveParametersFromServer'];
 
         $errors = Saml2Auth::sls($retrieveParametersFromServer);
         if (!empty($errors)) {
+            Session::flash('Saml2 error', var_export($errors, true));
             Log::error("Could not log out", $errors);
-            throw new \Exception("Could not log out");
+            $errorRoute = $samlSettings['lavarel']['errorRoute'];
+            return redirect($errorRoute);
         }
         Event::fire('saml2.logoutRequestReceived');
         $logoutRoute = $samlSettings['lavarel']['logoutRoute'];
