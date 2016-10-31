@@ -99,7 +99,7 @@ return $settings = array(
         // SLO endpoint info of the IdP.
         'singleLogoutService' => array(
             // URL Location of the IdP where the SP will send the SLO Request
-            'url' => $idp_host . '/saml2/idp/SingleLogoutService.php',
+            'url' => '',
             // SAML protocol binding to be used when returning the <Response>
             // message.  Onelogin Toolkit supports for this endpoint the
             // HTTP-Redirect binding only
