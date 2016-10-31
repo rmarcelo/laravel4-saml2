@@ -13,7 +13,8 @@ class Saml2Auth extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Pitbulk\Saml2\Saml2Auth';
+        return 'saml2auth';
+#        return 'Pitbulk\Saml2\Saml2Auth';
     }
 
 } 
