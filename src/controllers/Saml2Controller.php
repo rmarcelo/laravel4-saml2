@@ -57,10 +57,10 @@ class Saml2Controller extends Controller
 
         if (!empty($errors)) {
             Session::flash('Saml2 error', var_export($errors, true));
-            Log::error("Could not log in", var_export($errors, true));
-            $samlSettings = Config::get('saml2::saml_settings');
+            Log::error("Could not log in", $errors);
+            $samlSettings = Config::get('laravel4-saml2::saml_settings');
             $errorRoute = $samlSettings['lavarel']['errorRoute'];
-            return redirect($errorRoute);
+            return Redirect::to($errorRoute);
         }
 
         $user = Saml2Auth::getSaml2User();
@@ -70,7 +70,7 @@ class Saml2Controller extends Controller
         if($redirectUrl !== null){
             return Redirect::to($redirectUrl);
         } else {
-            $samlSettings = Config::get('saml2::saml_settings');
+            $samlSettings = Config::get('laravel4-saml2::saml_settings');
             $loginRoute = $samlSettings['lavarel']['loginRoute'];
             return Redirect::to($loginRoute); //may be set a configurable default
         }
@@ -83,7 +83,7 @@ class Saml2Controller extends Controller
      */
     public function sls()
     {   
-        $samlSettings = Config::get('saml2::saml_settings');
+        $samlSettings = Config::get('laravel4-saml2::saml_settings');
         $retrieveParametersFromServer = $samlSettings['lavarel']['retrieveParametersFromServer'];
 
         $errors = Saml2Auth::sls($retrieveParametersFromServer);
@@ -91,10 +91,14 @@ class Saml2Controller extends Controller
             Session::flash('Saml2 error', var_export($errors, true));
             Log::error("Could not log out", $errors);
             $errorRoute = $samlSettings['lavarel']['errorRoute'];
-            return redirect($errorRoute);
+            return Redirect::to($errorRoute);
         }
         Event::fire('saml2.logoutRequestReceived');
-        $logoutRoute = $samlSettings['lavarel']['logoutRoute'];
-        return Redirect::to($logoutRoute); //may be set a configurable default
+        if (isset($_GET['RelayState'])) {
+            return Redirect::to($_GET['RelayState']);
+        } else {
+            $logoutRoute = $samlSettings['lavarel']['logoutRoute'];
+            return Redirect::to($logoutRoute); //may be set a configurable default
+        }
     }
 }

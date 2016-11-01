@@ -8,6 +8,7 @@ use OneLogin_Saml2_Utils;
 
 use Log;
 use Event;
+use Config;
 use Psr\Log\InvalidArgumentException;
 
 class Saml2Auth
@@ -60,6 +61,9 @@ class Saml2Auth
     function logout($returnTo = null, $nameId = null, $sessionIndex = null)
     {
         $auth = $this->auth;
+        if ($returnTo == null) {
+            $returnTo = "/";
+        }
         $auth->logout($returnTo, [], $nameId, $sessionIndex);
     }
 
