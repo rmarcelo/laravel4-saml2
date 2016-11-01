@@ -4,7 +4,7 @@
     "keywords": ["laravel","saml", "saml2", "onelogin"],
     "homepage": "https://github.com/pitbulk/laravel4-saml2/",
     "license": "MIT",
-    "version" : "0.0.4",
+    "version" : "0.0.5",
     "authors": [
         {
             "name": "pitbulk",
