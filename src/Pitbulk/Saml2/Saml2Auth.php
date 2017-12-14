@@ -13,7 +13,6 @@ use Psr\Log\InvalidArgumentException;
 
 class Saml2Auth
 {
-
     /**
      * @var \OneLogin_Saml2_Auth
      */
@@ -129,4 +128,4 @@ class Saml2Auth
             );
         }
     }
-} 
+}

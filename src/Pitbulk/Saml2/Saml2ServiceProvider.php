@@ -69,5 +69,4 @@ class Saml2ServiceProvider extends ServiceProvider
     {
         return array();
     }
-
 }
