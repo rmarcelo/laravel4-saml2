@@ -17,7 +17,7 @@ class Saml2User
 
     protected $auth;
 
-    function __construct(OneLogin_Saml2_Auth $auth)
+    public function __construct(OneLogin_Saml2_Auth $auth)
     {
         $this->auth = $auth;
     }
@@ -25,7 +25,7 @@ class Saml2User
     /**
      * @return string User Id retrieved from assertion processed this request
      */
-    function getUserId()
+    public function getUserId()
     {
         $userId = null;
 
@@ -51,7 +51,7 @@ class Saml2User
     /**
      * @return array attributes retrieved from assertion processed this request
      */
-    function getAttributes()
+    public function getAttributes()
     {
         return $this->auth->getAttributes();
     }
@@ -59,12 +59,12 @@ class Saml2User
     /**
      * @return string the saml assertion processed this request
      */
-    function getRawSamlAssertion()
+    public function getRawSamlAssertion()
     {
         return Input::get('SAMLResponse'); //just this request
     }
 
-    function getIntendedUrl()
+    public function getIntendedUrl()
     {
         $relayState = Input::get('RelayState'); //just this request
 
@@ -73,12 +73,12 @@ class Saml2User
         }
     }
 
-    function getSessionIndex()
+    public function getSessionIndex()
     {
         return $this->auth->getSessionIndex();
     }
 
-    function getNameId()
+    public function getNameId()
     {
         return $this->auth->getNameId();
     }
