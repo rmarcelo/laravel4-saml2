@@ -29,18 +29,7 @@ class Saml2User
     {
         $userId = null;
 
-        $attrs = $this->getAttributes();
-        if (!empty($attrs)) {
-            $samlSettings = Config::get('laravel4-saml2::saml_settings');
-            if (isset($samlSettings['attrMapping'])) {
-                $attrMapping = $samlSettings['attrMapping'];
-                if (isset($attrMapping['userId']) && !empty($attrMapping['userId'])) {
-                    if (isset($attrs[$attrMapping['userId']])) {
-                        $userId = $attrs[$attrMapping['userId']][0];
-                    }
-                }
-            }
-        }
+        $userId = $this->getMappedAttribute('userId');
 
         if (empty($userId)) {
             $userId = $this->getNameId();
@@ -74,6 +63,19 @@ class Saml2User
         }
         return $mappedAttributes;
     }
+
+    /**
+     * @return string the mapped attribute from the assertions
+     */
+    public function getMappedAttribute($attribute)
+    {
+        $attributes = $this->getMappedAttributes();
+        if (array_key_exists($attribute, $attributes)) {
+            return $attributes[$attribute];
+        }
+        return '';
+    }
+
 
     /**
      * @return string the saml assertion processed this request
