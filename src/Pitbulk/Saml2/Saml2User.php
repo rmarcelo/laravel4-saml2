@@ -57,6 +57,25 @@ class Saml2User
     }
 
     /**
+     * @return array attributes retrieved from assertion, mapped by settings
+     */
+    public function getMappedAttributes()
+    {
+        $unmappedAttributes = $this->getAttributes();
+        if (empty($unmappedAttributes)) {
+            return $unmappedAttributes;
+        }
+        $samlSettings = Config::get('laravel4-saml2::saml_settings');
+        $mappedAttributes = [];
+        if (isset($samlSettings['attrMapping'])) {
+            foreach ($samlSettings['attrMapping'] as $mapped => $unmapped) {
+                $mappedAttributes[$mapped] = $unmappedAttributes[$unmapped];
+            }
+        }
+        return $mappedAttributes;
+    }
+
+    /**
      * @return string the saml assertion processed this request
      */
     function getRawSamlAssertion()
