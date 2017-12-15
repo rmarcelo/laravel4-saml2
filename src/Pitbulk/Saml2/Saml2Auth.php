@@ -13,7 +13,6 @@ use Psr\Log\InvalidArgumentException;
 
 class Saml2Auth
 {
-
     /**
      * @var \OneLogin_Saml2_Auth
      */
@@ -21,7 +20,7 @@ class Saml2Auth
 
     protected $samlAssertion;
 
-    function __construct($config)
+    public function __construct($config)
     {
         $this->auth = new OneLogin_Saml2_Auth($config);
     }
@@ -29,7 +28,7 @@ class Saml2Auth
     /**
      * @return bool if a valid user was fetched from the saml assertion this request.
      */
-    function isAuthenticated()
+    public function isAuthenticated()
     {
         $auth = $this->auth;
 
@@ -40,7 +39,7 @@ class Saml2Auth
      * The user info from the assertion
      * @return Saml2User
      */
-    function getSaml2User()
+    public function getSaml2User()
     {
         return new Saml2User($this->auth);
     }
@@ -49,7 +48,7 @@ class Saml2Auth
      * Initiate a saml2 login flow. It will redirect! Before calling this, check if user is
      * authenticated (here in saml2). That would be true when the assertion was received this request.
      */
-    function login($returnTo = null)
+    public function login($returnTo = null)
     {
         $auth = $this->auth;
         $auth->login($returnTo);
@@ -58,7 +57,7 @@ class Saml2Auth
      * Initiate a saml2 logout flow. It will close session on all other SSO services. You should close
      * local session if applicable.
      */
-    function logout($returnTo = null, $nameId = null, $sessionIndex = null)
+    public function logout($returnTo = null, $nameId = null, $sessionIndex = null)
     {
         $auth = $this->auth;
         if ($returnTo == null) {
@@ -71,7 +70,7 @@ class Saml2Auth
      * Process a Saml response (assertion consumer service)
      * @throws \Exception when errors are encountered. This sould not happen in a normal flow.
      */
-    function acs()
+    public function acs()
     {
 
         /** @var $auth OneLogin_Saml2_Auth */
@@ -94,7 +93,7 @@ class Saml2Auth
      * Process a Saml response (assertion consumer service)
      * @throws \Exception
      */
-    function sls($retrieveParametersFromServer = false, $keep_local_session = false, $stay= false)
+    public function sls($retrieveParametersFromServer = false, $keep_local_session = false, $stay = false)
     {
         $auth = $this->auth;
 
@@ -113,7 +112,7 @@ class Saml2Auth
      * @return mixed xml string representing metadata
      * @throws \InvalidArgumentException if metadata is not correctly set
      */
-    function getMetadata()
+    public function getMetadata()
     {
         $auth = $this->auth;
         $settings = $auth->getSettings();
@@ -129,4 +128,4 @@ class Saml2Auth
             );
         }
     }
-} 
+}
