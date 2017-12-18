@@ -73,7 +73,7 @@ class Saml2User
         if (array_key_exists($attribute, $attributes)) {
             return $attributes[$attribute];
         }
-        return '';
+        return null;
     }
 
 
