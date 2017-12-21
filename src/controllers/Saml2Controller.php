@@ -52,12 +52,16 @@ class Saml2Controller extends Controller
      */
     public function acs()
     {
+        $samlSettings = Config::get('laravel4-saml2::saml_settings');
+
         $errors = Saml2Auth::acs();
 
         if (!empty($errors)) {
             Session::flash('Saml2 error', var_export($errors, true));
             Log::error("Could not log in", $errors);
-            $samlSettings = Config::get('laravel4-saml2::saml_settings');
+            if ($samlSettings['debug']) {
+                Log::error(Saml2Auth::getLastErrorReason());
+            }
             $errorRoute = $samlSettings['lavarel']['errorRoute'];
             return Redirect::to($errorRoute);
         }
@@ -69,7 +73,6 @@ class Saml2Controller extends Controller
         if ($redirectUrl !== null) {
             return Redirect::to($redirectUrl);
         } else {
-            $samlSettings = Config::get('laravel4-saml2::saml_settings');
             $loginRoute = $samlSettings['lavarel']['loginRoute'];
             return Redirect::to($loginRoute); //may be set a configurable default
         }
@@ -89,6 +92,9 @@ class Saml2Controller extends Controller
         if (!empty($errors)) {
             Session::flash('Saml2 error', var_export($errors, true));
             Log::error("Could not log out", $errors);
+            if ($samlSettings['debug']) {
+                Log::error(Saml2Auth::getLastErrorReason());
+            }
             $errorRoute = $samlSettings['lavarel']['errorRoute'];
             return Redirect::to($errorRoute);
         }
