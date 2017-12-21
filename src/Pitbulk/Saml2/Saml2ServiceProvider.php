@@ -26,7 +26,10 @@ class Saml2ServiceProvider extends ServiceProvider
         $this->package('pitbulk/laravel4-saml2');
 
         $samlSettings = Config::get('laravel4-saml2::saml_settings');
-        if (isset($samlSettings['lavarel']) && isset($samlSettings['lavarel']['useRoutes']) && $samlSettings['lavarel']['useRoutes']) {
+        if (isset($samlSettings['lavarel']) &&
+            isset($samlSettings['lavarel']['useRoutes']) &&
+            $samlSettings['lavarel']['useRoutes']
+        ) {
             include __DIR__ . '/../../routes.php';
         }
     }
