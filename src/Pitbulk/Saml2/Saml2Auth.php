@@ -128,4 +128,13 @@ class Saml2Auth
             );
         }
     }
+
+    /**
+     * Wrapper to fetch error reason for the last error
+     * @return string  Error reason
+     */
+    public function getLastErrorReason()
+    {
+        return $this->auth->getLastErrorReason();
+    }
 }
