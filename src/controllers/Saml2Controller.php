@@ -11,7 +11,6 @@ use Response;
 use Log;
 use Session;
 
-
 class Saml2Controller extends Controller
 {
 
@@ -67,7 +66,7 @@ class Saml2Controller extends Controller
         Event::fire('saml2.loginRequestReceived', array($user));
         $redirectUrl = $user->getIntendedUrl();
 
-        if($redirectUrl !== null){
+        if ($redirectUrl !== null) {
             return Redirect::to($redirectUrl);
         } else {
             $samlSettings = Config::get('laravel4-saml2::saml_settings');
@@ -82,7 +81,7 @@ class Saml2Controller extends Controller
      * This means the user logged out of the SSO infrastructure, you 'should' log him out locally too.
      */
     public function sls()
-    {   
+    {
         $samlSettings = Config::get('laravel4-saml2::saml_settings');
         $retrieveParametersFromServer = $samlSettings['lavarel']['retrieveParametersFromServer'];
 
