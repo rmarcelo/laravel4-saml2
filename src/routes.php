@@ -7,33 +7,35 @@ if (isset($samlSettings['lavarel']) && isset($samlSettings['lavarel']['routesPre
         $prefix = 'saml2';
 }
 
-Route::group([
-    'prefix' => $prefix
-],
+Route::group(
+    [
+        'prefix' => $prefix
+    ],
     function () {
 
-    Route::get('/metadata', array(
-        'as' => 'saml_metadata',
-        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@metadata',
-    ));
+        Route::get('/metadata', array(
+            'as' => 'saml_metadata',
+            'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@metadata',
+        ));
 
-#    Route::get('/login', array(
-#        'as' => 'saml_login',
-#        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@login',
-#    ));
+        // Route::get('/login', array(
+        //   'as' => 'saml_login',
+        //   'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@login',
+        // ));
 
-    Route::get('/logout', array(
-        'as' => 'saml_logout',
-        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@logout',
-    ));
+        Route::get('/logout', array(
+            'as' => 'saml_logout',
+            'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@logout',
+        ));
 
-    Route::post('/acs', array(
-        'as' => 'saml_acs',
-        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@acs',
-    ));
+        Route::post('/acs', array(
+            'as' => 'saml_acs',
+            'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@acs',
+        ));
 
-    Route::get('/sls', array(
-        'as' => 'saml_sls',
-        'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@sls',
-    ));
-});
+        Route::get('/sls', array(
+            'as' => 'saml_sls',
+            'uses' => 'Pitbulk\Saml2\Controllers\Saml2Controller@sls',
+        ));
+    }
+);
