@@ -58,6 +58,9 @@ class Saml2User
         $mappedAttributes = [];
         if (count($attrMapping)) {
             foreach ($attrMapping as $mapped => $unmapped) {
+                if (is_array($unmappedAttributes[$unmapped]) and count($unmappedAttributes[$unmapped]) == 1) {
+                    $unmappedAttributes[$unmapped] = array_shift($unmappedAttributes[$unmapped]);
+                }
                 $mappedAttributes[$mapped] = $unmappedAttributes[$unmapped];
             }
         }
