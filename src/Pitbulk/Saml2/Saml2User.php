@@ -54,10 +54,10 @@ class Saml2User
         if (empty($unmappedAttributes)) {
             return $unmappedAttributes;
         }
-        $samlSettings = Config::get('laravel4-saml2::saml_settings');
+        $attrMapping = Config::get('laravel4-saml2::saml_settings.lavarel.attrMapping');
         $mappedAttributes = [];
-        if (isset($samlSettings['attrMapping'])) {
-            foreach ($samlSettings['attrMapping'] as $mapped => $unmapped) {
+        if (count($attrMapping)) {
+            foreach ($attrMapping as $mapped => $unmapped) {
                 $mappedAttributes[$mapped] = $unmappedAttributes[$unmapped];
             }
         }
