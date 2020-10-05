@@ -14,7 +14,7 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "4.2.*",
-        "onelogin/php-saml": "2.10.1"
+        "onelogin/php-saml": "dev-remove_mcrypt"
     },
     "autoload": {
         "classmap": [
@@ -24,5 +24,6 @@
             "Pitbulk\\Saml2\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
